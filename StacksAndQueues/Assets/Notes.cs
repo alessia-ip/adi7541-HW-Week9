@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Notes : MonoBehaviour
 {
@@ -11,7 +12,14 @@ public class Notes : MonoBehaviour
     public AudioClip audFour;
     public AudioClip audFive;
     public AudioClip audSix;
-    
+
+    public GameObject btnOne;
+    public GameObject btnTwo;
+    public GameObject btnThree;
+    public GameObject btnFour;
+    public GameObject btnFive;
+    public GameObject btnSix;
+
     private List<AudioClip> noteList = new List<AudioClip>();
     private Stack<AudioClip> noteBackup = new Stack<AudioClip>();
     private Queue<AudioClip> playerQueue = new Queue<AudioClip>();
@@ -24,6 +32,8 @@ public class Notes : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Random.InitState(System.DateTime.Now.Second);
+        
         noteList.Add(audOne);
         noteBackup.Push(noteList[0]);
         instructText.text = "Listen. Then, play it back.";
@@ -32,6 +42,32 @@ public class Notes : MonoBehaviour
     
     void PlayNotes()
     {
+
+        settowhite();
+        
+        switch (noteBackup.Peek().name)
+        {
+            case "NoteOne":
+                btnOne.GetComponent<Image>().color =  Color.green;
+                break;
+           case "NoteTwo":
+                    btnTwo.GetComponent<Image>().color =  Color.green;
+                    break;
+           case "NoteThree":
+                    btnThree.GetComponent<Image>().color =  Color.green;
+                    break;
+           case "NoteFour":
+                    btnFour.GetComponent<Image>().color =  Color.green;
+                    break;
+           case "NoteFive":
+                    btnFive.GetComponent<Image>().color =  Color.green;
+                    break;
+           case "NoteSix":
+                    btnSix.GetComponent<Image>().color =  Color.green;
+                    break;
+           default:
+                    break;
+        }
         aud.PlayOneShot(noteBackup.Pop());
         if (noteBackup.Count > 0) 
         {
@@ -41,9 +77,20 @@ public class Notes : MonoBehaviour
         {
             playerTurn = true;
             AddNotesToPlaylist();
+            Invoke("settowhite", 1f);
         }
     }
 
+    void settowhite()
+    {
+        btnOne.GetComponent<Image>().color =  Color.white;
+        btnTwo.GetComponent<Image>().color =  Color.white;
+        btnThree.GetComponent<Image>().color =  Color.white;
+        btnFour.GetComponent<Image>().color =  Color.white;
+        btnFive.GetComponent<Image>().color =  Color.white;
+        btnSix.GetComponent<Image>().color =  Color.white;
+    }
+    
     void increaseDifficulty()
     {
         var newNote = Random.Range(1, 6);
