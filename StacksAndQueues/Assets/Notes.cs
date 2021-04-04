@@ -28,16 +28,39 @@ public class Notes : MonoBehaviour
     
     public bool playerTurn = false;
     public TextMeshProUGUI instructText;
+
+    public TextMeshProUGUI difficulty;
+
+    public List<int> grabBag;
     
     // Start is called before the first frame update
     void Start()
     {
         Random.InitState(System.DateTime.Now.Second);
         
+        setGrabBag();
+        
         noteList.Add(audOne);
         noteBackup.Push(noteList[0]);
         instructText.text = "Listen. Then, play it back.";
         Invoke("PlayNotes", 1f);
+        difficulty.text = "Current difficulty: " + noteList.Count;
+    }
+
+    void setGrabBag()
+    {
+        grabBag.Add(1);
+        grabBag.Add(2);        
+        grabBag.Add(3);
+        grabBag.Add(4);        
+        grabBag.Add(5);
+        grabBag.Add(6);
+        grabBag.Add(1);
+        grabBag.Add(2);        
+        grabBag.Add(3);
+        grabBag.Add(4);        
+        grabBag.Add(5);
+        grabBag.Add(6);
     }
     
     void PlayNotes()
@@ -93,8 +116,23 @@ public class Notes : MonoBehaviour
     
     void increaseDifficulty()
     {
-        var newNote = Random.Range(1, 6);
-        Debug.Log(newNote);
+
+        Debug.Log(grabBag.Count + " numbers left");
+        
+        if (grabBag.Count == 0)
+        {
+            setGrabBag();
+        }
+
+        var rand = Random.Range(0, grabBag.Count - 1);
+        var newNote = grabBag[rand];
+        
+        Debug.Log(grabBag[rand] + " is the number we wanted at place " + rand);
+        
+        grabBag.RemoveAt(rand);
+        
+        Debug.Log(newNote + " is the new note");
+        
         switch (newNote)
         {
             case 1:
@@ -119,6 +157,7 @@ public class Notes : MonoBehaviour
                 noteList.Add(audOne);
                 break;
         }
+        difficulty.text = "Current difficulty: " + noteList.Count;
         AddNotesToPlaylist();
         Invoke("PlayNotes", 1f);
     }
@@ -144,14 +183,11 @@ public class Notes : MonoBehaviour
             playerQueue.Dequeue();
             noteBackup.Pop();
             CompareStacks();
-            Debug.Log("Correct!");
         }
         else
         {
             instructText.text = "Try again";
-            Debug.Log("Fail");
-            Debug.Log(playerQueue.Peek().name+ " Player note");
-            Debug.Log(noteBackup.Peek().name + " Real note");
+          
             playerQueue.Clear();
             noteBackup.Clear();
             AddNotesToPlaylist();
